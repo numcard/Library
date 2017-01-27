@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<libraryBook>
+    <libraryBook>
+        <author>Авдеев А.Л.</author>
+        <bookFree>true</bookFree>
+        <copyright>2017</copyright>
+        <inventoryNumber>1</inventoryNumber>
+        <numberOfPages>354</numberOfPages>
+        <title>Джава для начинающих</title>
+    </libraryBook>
+</libraryBook>
