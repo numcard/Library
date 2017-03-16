@@ -6,6 +6,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.paint.Color;
 
+import java.io.IOException;
+
 public class RootLayoutController
 {
     private ClientApp clientApp;
@@ -17,11 +19,11 @@ public class RootLayoutController
     }
 
     @FXML
-    private void handleOpenConnection()
+    private void handleOpenConnection() throws IOException
     {
         client = clientApp.getClient();
         // check if client connected
-        if(client.isConnected())
+        if(client.getConnection().isConnected())
         {
             Alert alert = new Alert(Alert.AlertType.WARNING);
             alert.setTitle("Соединение с сервером");
@@ -34,7 +36,7 @@ public class RootLayoutController
             overviewController = clientApp.getBookOverviewController();
             overviewController.getActiveCircle().setFill(Color.RED);    // default value
 
-            int status = client.createConnection();
+            int status = client.getConnection().createConnection();
             if(status == -1)
             {
                 Alert alert = new Alert(Alert.AlertType.WARNING);
@@ -55,7 +57,7 @@ public class RootLayoutController
             {
                 Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
                 alert.setTitle("Сервер");
-                alert.setHeaderText(client.readInputLine());
+                alert.setHeaderText(client.getConnection().readInputLine());
                 alert.showAndWait();
                 overviewController.getActiveCircle().setFill(Color.GREEN);
                 overviewController.getButtonBar().setDisable(false);
@@ -74,9 +76,9 @@ public class RootLayoutController
     {
         client = clientApp.getClient();
         // check if client connected
-        if(client.isConnected())
+        if(client.getConnection().isConnected())
         {
-            client.closeConnection();
+            client.getConnection().closeConnection();
             overviewController = clientApp.getBookOverviewController();
             overviewController.getActiveCircle().setFill(Color.RED);
             overviewController.getButtonBar().setDisable(true);

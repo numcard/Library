@@ -1,19 +1,20 @@
 package server;
 
+import server.interfaces.ConnectionInterface;
 import lib.model.LibraryBook;
 
 import java.io.*;
 import java.net.Socket;
 import java.util.List;
 
-public class Connection extends Thread
+public class Connection extends Thread implements ConnectionInterface
 {
     private InputStream inputStream;
     private OutputStream outputStream;
 
     private BufferedReader inputReader;
     private PrintWriter outputWriter;
-    private Boolean status;
+    private boolean status;
     private List<LibraryBook> books;
 
     void setBooks(List<LibraryBook> books)
@@ -67,12 +68,17 @@ public class Connection extends Thread
         }
     }
 
-    /**
-     * Method for inputStream commands/requests
-     * @param command   inputStream command
-     * @return          run the command's method and return status true/false
-     */
-    private boolean readCommand(String command) throws IOException
+    // Help method
+    private int getNumericArgument(String line)
+    {
+        String[] arr = line.split(" ");
+        if(arr.length != 2)
+            throw new IllegalArgumentException(line);
+        return Integer.parseInt(arr[1]);
+    }
+
+    @Override
+    public boolean readCommand(String command) throws IOException
     {
         if(command.startsWith("CHECK_INVENTORY_NUMBER"))
             checkInventoryNumber(getNumericArgument(command));
@@ -81,7 +87,8 @@ public class Connection extends Thread
         return false;
     }
 
-    private void checkInventoryNumber(int inventoryNumber)
+    @Override
+    public void checkInventoryNumber(int inventoryNumber)
     {
         boolean checker = false;
         for(LibraryBook book: books)
@@ -98,20 +105,8 @@ public class Connection extends Thread
             outputWriter.println("FREE");
     }
 
-    // Help method
-    private int getNumericArgument(String line)
-    {
-        String[] arr = line.split(" ");
-        if(arr.length != 2)
-            throw new IllegalArgumentException(line);
-        return Integer.parseInt(arr[1]);
-    }
-
-    /**
-     * Read zipArchive from InputStream and Save it
-     * @throws IOException  I/0 Exception
-     */
-    private void saveBooks(String path) throws IOException
+    @Override
+    public void saveBooks(String path) throws IOException
     {
         File archiveFile = new File(path + "books.zip");
         FileOutputStream fileOutputStream;

@@ -8,14 +8,6 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- *
- * Client -> Server                             Server -> Client
- * ----------------                             ----------------
- * CHECK_INVENTORY_NUMBER <inventoryNumber>
- *
- *
- */
 public class Server
 {
     private static final int DEFAULT_PORT = 5555;

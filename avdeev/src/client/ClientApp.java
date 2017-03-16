@@ -20,15 +20,15 @@ import java.io.IOException;
 
 public class ClientApp extends Application
 {
-    private Stage primaryStage;                                                                             // Сцена приложения
-    private BorderPane rootLayout;                                                                          // Корневой макет
-    private static final ObservableList<LibraryBook> LIBRARY_BOOKS = FXCollections.observableArrayList();   // Данные приложения
-    private static final Client client = new Client();                                                      // Модель клиента
+    private Stage primaryStage;                                                               // Сцена приложения
+    private BorderPane rootLayout;                                                            // Корневой макет
+    private ObservableList<LibraryBook> libraryBooks = FXCollections.observableArrayList();   // Данные приложения
+    private final Client client = new Client();                                               // Модель клиента
     private BookOverviewController bookOverviewController;
 
     public ObservableList<LibraryBook> getLibraryBooks()
     {
-        return LIBRARY_BOOKS;
+        return libraryBooks;
     }
     public Client getClient()
     {
@@ -62,10 +62,10 @@ public class ClientApp extends Application
     @Override
     public void stop()
     {
-        if(client.isConnected())
+        if(client.getConnection().isConnected())
         {
-            client.saveBooks(LIBRARY_BOOKS);
-            client.closeConnection();
+            client.saveBooks(libraryBooks);
+            client.getConnection().closeConnection();
         }
     }
 
@@ -104,7 +104,7 @@ public class ClientApp extends Application
             rootLayout.setCenter(lotOverviewPage);
             bookOverviewController = loader.getController();
             bookOverviewController.setClientApp(this);
-            bookOverviewController.setTableBooks(LIBRARY_BOOKS);
+            bookOverviewController.setTableBooks(libraryBooks);
         }
         catch(IOException e)
         {
