@@ -29,4 +29,9 @@ public interface ConnectionInterface
      * @throws IOException  IOException
      */
     void getBooks() throws IOException;
+
+    /**
+     * Check the books archive existed on server
+     */
+    void checkBooks() throws IOException;
 }

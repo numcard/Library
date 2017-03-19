@@ -49,20 +49,22 @@ public class ConnectionService
     public static void uploadFile(String path, Socket socket) throws IOException
     {
         File archiveFile = new File(path);
-        if(archiveFile.exists())
+        if(!archiveFile.exists())
+            throw new FileNotFoundException(path);
+
+        long fileSize = archiveFile.length();
+        sendCommand("ARCHIVE_SIZE:" + fileSize, socket);
+        FileInputStream in = new FileInputStream(archiveFile);
+        BufferedOutputStream out = new BufferedOutputStream(socket.getOutputStream());
+        int bytes;
+        while((bytes = in.read()) != -1)
         {
-            FileInputStream in = new FileInputStream(archiveFile);
-            BufferedOutputStream out = new BufferedOutputStream(socket.getOutputStream());
-            int bytes;
-            while((bytes = in.read()) != -1)
-            {
-                out.write(bytes);
-            }
-            // send -1 to exit
-            out.write(-1);
-            out.flush();
-            in.close();
+            //System.out.println("send: " + bytes);
+            out.write(bytes);
         }
+        out.flush();
+        in.close();
+
     }
 
     /**
@@ -79,14 +81,16 @@ public class ConnectionService
             //noinspection ResultOfMethodCallIgnored
             file.createNewFile();
         }
+        long fileSize = Long.parseLong(readInputLine(socket).split(":")[1]);
         BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(file));
         BufferedInputStream in = new BufferedInputStream(socket.getInputStream());
 
-        int bytes;
-        // TODO
-        // waiting 255 instead -1
-        while((bytes = in.read()) != 255)
+        for(long i = 0L; i < fileSize; i++)
         {
+            int bytes = in.read();
+            //System.out.println("upload: " + bytes);
+            if(bytes == -1)
+                throw new IllegalStateException("Input stream is closed");
             out.write(bytes);
         }
         out.flush();

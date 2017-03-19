@@ -82,7 +82,7 @@ public class BookEditController
         {
             errorMessage += "Количество страниц указано неверно!\n";
         }
-        if(copyrightField.getText() == null || Integer.parseInt(copyrightField.getText()) <= 1900)
+        if(copyrightField.getText() == null || Integer.parseInt(copyrightField.getText()) <= 0)
         {
             errorMessage += "Год издания указан не верно!\n";
         }

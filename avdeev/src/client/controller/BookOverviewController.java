@@ -84,6 +84,7 @@ public class BookOverviewController
         boolean okClicked = clientApp.showBookEditDialog(newBook, "Создание книги");
         if(okClicked)
             clientApp.getLibraryBooks().add(newBook);
+        clientApp.getClient().saveBooks(clientApp.getLibraryBooks());
     }
 
     @FXML
@@ -103,6 +104,7 @@ public class BookOverviewController
                 showBookDetails(selectedBook);
             }
         }
+        clientApp.getClient().saveBooks(clientApp.getLibraryBooks());
     }
 
     @FXML
@@ -119,6 +121,7 @@ public class BookOverviewController
             clientApp.getLibraryBooks().clear();
             clientApp.getLibraryBooks().addAll(bookTable.getItems());
         }
+        clientApp.getClient().saveBooks(clientApp.getLibraryBooks());
     }
 
     private void showAlertNoChoose()

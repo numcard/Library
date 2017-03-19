@@ -1,6 +1,8 @@
 package server;
 
 import lib.model.LibraryBook;
+import lib.service.BookService;
+import lib.service.ConnectionService;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -13,7 +15,6 @@ import java.util.concurrent.Executors;
 public class Server
 {
     private static final int DEFAULT_PORT = 5555;
-    private List<LibraryBook> books = new ArrayList<>();
 
     public void start()
     {
@@ -24,7 +25,6 @@ public class Server
             {
                 Socket socket = listener.accept();
                 Connection connection = new Connection(socket);
-                connection.setBooks(books);
                 connection.setFuture(executorService.submit(connection));
             }
         }

@@ -111,4 +111,23 @@ public class Connection implements ConnectionInterface
         }
         return new ArrayList<>();
     }
+
+    @Override
+    public boolean checkBookIsExisted()
+    {
+        if(!isConnected())
+            throw new IllegalStateException("There's no connection with server");
+        try
+        {
+            ConnectionService.sendCommand("CHECK_BOOKS", socket);
+            String answer = ConnectionService.readInputLine(socket);
+            if(answer.startsWith("EXISTED"))
+                return true;
+        }
+        catch(IOException e)
+        {
+            ClientException.Throw(e);
+        }
+        return false;
+    }
 }

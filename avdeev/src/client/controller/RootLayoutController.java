@@ -64,7 +64,8 @@ public class RootLayoutController
                 overviewController.getActiveCircle().setFill(Color.GREEN);
                 overviewController.getButtonBar().setDisable(false);
                 // download books from server
-                clientApp.setLibraryBooks(client.getConnection().downloadBooks());
+                if(client.getConnection().checkBookIsExisted())
+                    clientApp.setLibraryBooks(client.getConnection().downloadBooks());
             }
         }
     }

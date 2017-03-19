@@ -62,4 +62,10 @@ public interface ConnectionInterface
      * @return  List of LibraryBooks
      */
     List<LibraryBook> downloadBooks();
+
+    /**
+     * Check the server has a books' archive
+     * @return  true if file existed, false if no
+     */
+    boolean checkBookIsExisted();
 }
