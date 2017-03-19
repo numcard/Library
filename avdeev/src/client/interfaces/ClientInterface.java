@@ -18,5 +18,5 @@ public interface ClientInterface
      * @param inventoryNumber   inventory number
      * @return                  1 if occupied, 0 if free, -1 if exception/error
      */
-    int checkInventoryNumber(int inventoryNumber);
+    int checkInventoryNumber(int inventoryNumber) throws IOException;
 }

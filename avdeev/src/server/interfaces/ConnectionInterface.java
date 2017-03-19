@@ -5,17 +5,28 @@ import java.io.IOException;
 public interface ConnectionInterface
 {
     /**
-     * Method for inputStream commands/requests
+     * Method for control for commands/requests
      * @param command   inputStream command
      * @return          run the command's method and return status true/false
      */
-    public boolean readCommand(String command) throws IOException;
-
-    public void checkInventoryNumber(int inventoryNumber);
+    boolean readCommand(String command) throws IOException;
 
     /**
-     * Read zipArchive from InputStream and Save it
-     * @throws IOException  I/0 Exception
+     * Check inventory number is free or occupied
+     * @param inventoryNumber   Inventory number
+     * @throws IOException      IOException
      */
-    public void saveBooks(String path) throws IOException;
+    void checkInventoryNumber(int inventoryNumber) throws IOException;
+
+    /**
+     * Upload file from server and save it
+     * @throws IOException  IOException
+     */
+    void saveBooks() throws IOException;
+
+    /**
+     * Send books to client
+     * @throws IOException  IOException
+     */
+    void getBooks() throws IOException;
 }

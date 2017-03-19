@@ -7,6 +7,8 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class Server
 {
@@ -15,25 +17,18 @@ public class Server
 
     public void start()
     {
+        ExecutorService executorService = Executors.newWorkStealingPool();
         try(ServerSocket listener = new ServerSocket(DEFAULT_PORT))
         {
             while(true)
             {
                 Socket socket = listener.accept();
-                System.out.println("Клиент зашел!");
-                Connection connection = new Connection(socket, true);
-                connection.start();
+                Connection connection = new Connection(socket);
                 connection.setBooks(books);
-                // Wait client working
-                while(connection.getStatus())
-                {
-                    Thread.sleep(1000);
-                }
-                connection.interrupt();
-                System.out.println("Клиент вышел!");
+                connection.setFuture(executorService.submit(connection));
             }
         }
-        catch(IOException | InterruptedException e)
+        catch(IOException e)
         {
             ServerException.Throw(e);
         }

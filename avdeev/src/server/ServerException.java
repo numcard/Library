@@ -18,9 +18,9 @@ class ServerException
             exception.printStackTrace(); // debug mode
             pw.write(exception.getMessage());
         }
-        catch(IOException e)
+        catch(IOException ignored)
         {
-            //TODO
+            //ignored
         }
     }
 }

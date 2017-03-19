@@ -3,13 +3,18 @@ package client;
 import client.interfaces.ClientInterface;
 import client.interfaces.ConnectionInterface;
 import lib.model.LibraryBook;
+import lib.service.BookService;
+
+import javax.xml.bind.JAXBException;
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 public class Client implements ClientInterface
 {
     private ConnectionInterface connection;
 
-    Client()
+    public Client()
     {
         connection = new Connection();
     }
@@ -22,27 +27,25 @@ public class Client implements ClientInterface
     @Override
     public void saveBooks(List<LibraryBook> libraryBooks)
     {
-        //TODO
-        /*try
+        try
         {
             File archiveFile = BookService.saveBooksToArchive(libraryBooks, "avdeev/src/client/data/temp/");
-            sendCommand("SAVE_BOOKS");
-            sendFile(archiveFile);
+            connection.sendCommand("SAVE_BOOKS");
+            connection.sendFile(archiveFile.getPath());
         }
         catch(IOException | JAXBException e)
         {
             ClientException.Throw(e);
-        }*/
+        }
     }
 
     @Override
     public int checkInventoryNumber(int inventoryNumber)
     {
-        //TODO
-        /*sendCommand("CHECK_INVENTORY_NUMBER " + inventoryNumber);
         try
         {
-            String answer = readInputLine();
+            connection.sendCommand("CHECK_INVENTORY_NUMBER " + inventoryNumber);
+            String answer = connection.readInputLine();
             if(answer.equals("OCCUPIED"))
                 return 1;
             if(answer.equals("FREE"))
@@ -51,7 +54,7 @@ public class Client implements ClientInterface
         catch(IOException e)
         {
             ClientException.Throw(e);
-        }*/
+        }
         return -1;
     }
 }

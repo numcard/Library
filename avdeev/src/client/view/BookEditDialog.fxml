@@ -87,7 +87,7 @@
                       <Insets left="5.0" right="5.0" />
                   </GridPane.margin>
               </TextField>
-              <Label prefHeight="43.0" prefWidth="103.0" text="         Торг" textAlignment="CENTER" GridPane.rowIndex="5">
+              <Label prefHeight="43.0" prefWidth="103.0" text="    Наличие" textAlignment="CENTER" GridPane.rowIndex="5">
                   <font>
                       <Font size="14.0" />
                   </font>

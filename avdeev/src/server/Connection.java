@@ -1,71 +1,33 @@
 package server;
 
+import lib.service.ConnectionService;
 import server.interfaces.ConnectionInterface;
 import lib.model.LibraryBook;
 
 import java.io.*;
 import java.net.Socket;
 import java.util.List;
+import java.util.concurrent.Future;
 
-public class Connection extends Thread implements ConnectionInterface
+public class Connection implements Runnable, ConnectionInterface
 {
-    private InputStream inputStream;
-    private OutputStream outputStream;
-
-    private BufferedReader inputReader;
-    private PrintWriter outputWriter;
-    private boolean status;
+    private static final String ARCHIVE_PATH = "avdeev/src/server/data/books.zip";
+    private Socket socket;
     private List<LibraryBook> books;
+    private Future<?> future;
 
     void setBooks(List<LibraryBook> books)
     {
         this.books = books;
     }
-    boolean getStatus()
+    void setFuture(Future<?> future)
     {
-        return status;
+        this.future = future;
     }
 
-    Connection(Socket socket, Boolean status)
+    Connection(Socket socket)
     {
-        this.status = status;
-        try
-        {
-            inputStream = socket.getInputStream();
-            inputReader = new BufferedReader(new InputStreamReader(inputStream));
-            outputStream = socket.getOutputStream();
-            outputWriter = new PrintWriter(outputStream, true);
-        }
-        catch(IOException e)
-        {
-            ServerException.Throw(e);
-        }
-    }
-
-    /**
-     * The run method of this thread.
-     */
-    public void run()
-    {
-        String command;
-        outputWriter.println("Вы зашли на сервер!");
-        try
-        {
-            // Принимаем сообщения, пока не получем команду @EXIT
-            while(!(command = inputReader.readLine()).equalsIgnoreCase("EXIT"))
-            {
-                if(!readCommand(command))
-                    outputWriter.print("ERROR Неизвестная комманда!");
-            }
-        }
-        catch(IOException | NullPointerException e)
-        {
-            ServerException.Throw(e);
-        }
-        finally
-        {
-            status = false;
-        }
+        this.socket = socket;
     }
 
     // Help method
@@ -78,17 +40,43 @@ public class Connection extends Thread implements ConnectionInterface
     }
 
     @Override
+    public void run()
+    {
+        String command;
+        try
+        {
+            ConnectionService.sendCommand("Вы зашли на сервер!", socket);
+            // Принимаем сообщения, пока не получем команду @EXIT
+            while(!(command = ConnectionService.readInputLine(socket)).equalsIgnoreCase("EXIT"))
+            {
+                if(!readCommand(command))
+                    ConnectionService.sendCommand("ERROR Неизвестная комманда!", socket);
+            }
+        }
+        catch(IOException e)
+        {
+            ServerException.Throw(e);
+        }
+        finally
+        {
+            future.cancel(true);
+        }
+    }
+
+    @Override
     public boolean readCommand(String command) throws IOException
     {
+        if(command.startsWith("GET_BOOKS"))
+            getBooks();
         if(command.startsWith("CHECK_INVENTORY_NUMBER"))
             checkInventoryNumber(getNumericArgument(command));
         if(command.equals("SAVE_BOOKS"))
-            saveBooks("avdeev/src/server/data/");
+            saveBooks();
         return false;
     }
 
     @Override
-    public void checkInventoryNumber(int inventoryNumber)
+    public void checkInventoryNumber(int inventoryNumber) throws IOException
     {
         boolean checker = false;
         for(LibraryBook book: books)
@@ -100,30 +88,20 @@ public class Connection extends Thread implements ConnectionInterface
             }
         }
         if(checker)
-            outputWriter.println("OCCUPIED");
+            ConnectionService.sendCommand("OCCUPIED", socket);
         else
-            outputWriter.println("FREE");
+            ConnectionService.sendCommand("FREE", socket);
     }
 
     @Override
-    public void saveBooks(String path) throws IOException
+    public void saveBooks() throws IOException
     {
-        File archiveFile = new File(path + "books.zip");
-        FileOutputStream fileOutputStream;
+        ConnectionService.downloadFile(ARCHIVE_PATH, socket);
+    }
 
-        if(!archiveFile.exists())
-        {
-            //noinspection ResultOfMethodCallIgnored
-            archiveFile.createNewFile();
-        }
-
-        fileOutputStream = new FileOutputStream(archiveFile);
-        int out;
-        while((out = inputStream.read()) != -1)
-        {
-            fileOutputStream.write(out);
-        }
-        fileOutputStream.flush();
-        fileOutputStream.close();
+    @Override
+    public void getBooks() throws IOException
+    {
+        ConnectionService.uploadFile(ARCHIVE_PATH, socket);
     }
 }

@@ -7,6 +7,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.paint.Color;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 public class RootLayoutController
 {
@@ -59,8 +60,11 @@ public class RootLayoutController
                 alert.setTitle("Сервер");
                 alert.setHeaderText(client.getConnection().readInputLine());
                 alert.showAndWait();
+                // change indicator color
                 overviewController.getActiveCircle().setFill(Color.GREEN);
                 overviewController.getButtonBar().setDisable(false);
+                // download books from server
+                clientApp.setLibraryBooks(client.getConnection().downloadBooks());
             }
         }
     }

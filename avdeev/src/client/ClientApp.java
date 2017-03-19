@@ -17,18 +17,24 @@ import lib.model.LibraryBook;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 public class ClientApp extends Application
 {
-    private Stage primaryStage;                                                               // Сцена приложения
-    private BorderPane rootLayout;                                                            // Корневой макет
-    private ObservableList<LibraryBook> libraryBooks = FXCollections.observableArrayList();   // Данные приложения
-    private final Client client = new Client();                                               // Модель клиента
+    private Stage primaryStage;                                                                     // Сцена приложения
+    private BorderPane rootLayout;                                                                  // Корневой макет
+    private final ObservableList<LibraryBook> libraryBooks = FXCollections.observableArrayList();   // Данные приложения
+    private final Client client = new Client();                                                     // Модель клиента
     private BookOverviewController bookOverviewController;
 
     public ObservableList<LibraryBook> getLibraryBooks()
     {
         return libraryBooks;
+    }
+    public void setLibraryBooks(List<LibraryBook> libraryBooks)
+    {
+        this.libraryBooks.clear();
+        this.libraryBooks.addAll(libraryBooks);
     }
     public Client getClient()
     {

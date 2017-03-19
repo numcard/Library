@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
 <?import javafx.scene.shape.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.text.*?>
@@ -82,7 +83,7 @@
                              <Insets />
                          </opaqueInsets>
                         <children>
-                            <Button layoutX="588.0" layoutY="558.0" mnemonicParsing="false" onAction="#handleNewBook" prefHeight="25.0" prefWidth="83.0" text="Новая">
+                            <Button layoutX="588.0" layoutY="558.0" mnemonicParsing="false" onAction="#handleNewBook" prefHeight="25.0" prefWidth="83.0" text="Создать">
                                 <HBox.margin>
                                     <Insets right="5.0" />
                                 </HBox.margin>

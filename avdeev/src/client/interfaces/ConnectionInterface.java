@@ -1,6 +1,11 @@
 package client.interfaces;
 
+import lib.model.LibraryBook;
+
+import javax.xml.bind.JAXBException;
+import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 public interface ConnectionInterface
 {
@@ -40,7 +45,21 @@ public interface ConnectionInterface
     /**
      * Send text command to Server
      * @param command   Text command
-     * @return
+     * @return 0 if success, -1 if there's no connection
+     * @throws IOException IOException
      */
-    int sendCommand(String command);
+    int sendCommand(String command) throws IOException;
+
+    /**
+     * Send file to Server
+     * @param path          File path to send
+     * @throws IOException  IOException
+     */
+    void sendFile(String path) throws IOException;
+
+    /**
+     * Download books from Server
+     * @return  List of LibraryBooks
+     */
+    List<LibraryBook> downloadBooks();
 }

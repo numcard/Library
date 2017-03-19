@@ -1,15 +1,22 @@
 package client;
 
 import client.interfaces.ConnectionInterface;
+import lib.model.LibraryBook;
+import lib.service.BookService;
+import lib.service.ConnectionService;
 
+import javax.xml.bind.JAXBException;
 import java.io.*;
 import java.net.ConnectException;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Connection implements ConnectionInterface
 {
     private static final int DEFAULT_PORT = 5555;
     private static final String DEFAULT_HOST = "localhost";
+    private static final String ARCHIVE_PATH = "avdeev/src/client/data/temp/books.zip";
     private boolean connection = false;
 
     private Socket socket;
@@ -29,6 +36,8 @@ public class Connection implements ConnectionInterface
     @Override
     public int createConnection(String host, int port)
     {
+        if(connection)
+            return 0;
         try
         {
             socket = new Socket(host, port);
@@ -50,6 +59,8 @@ public class Connection implements ConnectionInterface
     @Override
     public int closeConnection()
     {
+        if(!connection)
+            return 0;
         try
         {
             sendCommand("EXIT");
@@ -67,46 +78,37 @@ public class Connection implements ConnectionInterface
     @Override
     public String readInputLine() throws IOException
     {
-        BufferedReader reader;
-        if(isConnected())
-        {
-            reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            return reader.readLine();
-        }
-        return "";
+        return ConnectionService.readInputLine(socket);
     }
 
     @Override
-    public int sendCommand(String command)
+    public int sendCommand(String command) throws IOException
     {
-        PrintWriter writer;
-        if(connection)
+        return ConnectionService.sendCommand(command, socket);
+    }
+
+    @Override
+    public void sendFile(String path) throws IOException
+    {
+        ConnectionService.uploadFile(path, socket);
+    }
+
+    @Override
+    public List<LibraryBook> downloadBooks()
+    {
+        if(isConnected())
         {
             try
             {
-                writer = new PrintWriter(socket.getOutputStream(), true);
+                ConnectionService.sendCommand("GET_BOOKS", socket);
+                ConnectionService.downloadFile(ARCHIVE_PATH, socket);
+                return BookService.loadBooksFromArchive(ARCHIVE_PATH);
             }
-            catch(IOException e)
+            catch(JAXBException | IOException e)
             {
                 ClientException.Throw(e);
-                return 1;
             }
-            writer.println(command);
-            return 0;
         }
-        return -1;
-    }
-
-    // help method
-    private void sendFile(File file) throws IOException
-    {
-        FileInputStream fileInputStream = new FileInputStream(file);
-        OutputStream out = socket.getOutputStream();
-        int in;
-        while((in = fileInputStream.read()) != -1)
-        {
-            out.write(in);
-        }
-        out.flush();
+        return new ArrayList<>();
     }
 }

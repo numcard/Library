@@ -155,10 +155,4 @@ public class LibraryBook
             numberOfPages = new SimpleIntegerProperty(0);
         }
     }
-
-    @Override
-    public String toString()
-    {
-        return "LibraryBook{" + "book=" + book + ", inventoryNumber=" + inventoryNumber + ", bookFree=" + bookFree + '}';
-    }
 }

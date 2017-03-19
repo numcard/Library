@@ -106,8 +106,15 @@ public class BookService
         return archiveFile;
     }
 
+    /**
+     * Load Books from archive's xml file
+     * @param path              Archive path to load
+     * @return                  List of Books
+     * @throws IOException      IOException
+     * @throws JAXBException    JAXBException
+     */
     @Nullable
-    public static List<LibraryBook> loadBooksFromArchive(File archiveFile) throws IOException, JAXBException
+    public static List<LibraryBook> loadBooksFromArchive(String path) throws IOException, JAXBException
     {
         ZipFile zipFile;
         ZipEntry zipEntry;
@@ -115,6 +122,7 @@ public class BookService
         File xmlFile;
         FileOutputStream fileOutputStream;
 
+        File archiveFile = new File(path);
         if(!archiveFile.exists())
             throw new FileNotFoundException(archiveFile.getName() + " not found");
 
