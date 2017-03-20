@@ -2,6 +2,7 @@ package server.interfaces;
 
 import java.io.IOException;
 
+@SuppressWarnings("unused")
 public interface ConnectionInterface
 {
     /**
@@ -34,4 +35,19 @@ public interface ConnectionInterface
      * Check the books archive existed on server
      */
     void checkBooks() throws IOException;
+
+    /**
+     * Check the status to write/save data on server
+     */
+    void checkStatus() throws IOException;
+
+    /**
+     * Free status to write/save data on server
+     */
+    void freeStatus();
+
+    /**
+     * Blocked status to write/save data on server
+     */
+    void blockedStatus();
 }

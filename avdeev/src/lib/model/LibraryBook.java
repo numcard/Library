@@ -15,10 +15,6 @@ public class LibraryBook
     {
         return inventoryNumber.get();
     }
-    public SimpleLongProperty inventoryNumberProperty()
-    {
-        return inventoryNumber;
-    }
     public void setInventoryNumber(long inventoryNumber)
     {
         this.inventoryNumber.set(inventoryNumber);
@@ -26,10 +22,6 @@ public class LibraryBook
     public boolean isBookFree()
     {
         return bookFree.get();
-    }
-    public SimpleBooleanProperty bookFreeProperty()
-    {
-        return bookFree;
     }
     public void setBookFree(boolean bookFree)
     {
@@ -74,10 +66,6 @@ public class LibraryBook
     public int getNumberOfPages()
     {
         return book.getNumberOfPages();
-    }
-    public SimpleIntegerProperty numberOfPagesProperty()
-    {
-        return book.numberOfPagesProperty();
     }
     public void setNumberOfPages(int numberOfPages)
     {

@@ -18,6 +18,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 
+@SuppressWarnings("SameParameterValue")
 public class BookService
 {
     /**

@@ -1,6 +1,6 @@
 package client.controller;
 
-import client.Client;
+import client.interfaces.ClientInterface;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.CheckBox;
@@ -19,7 +19,8 @@ public class BookEditController
     @FXML private TextField copyrightField;
     @FXML private TextField inventoryNumberField;
     @FXML private CheckBox freeCheckBox;
-    private Client client;
+    private ClientInterface client;
+    private boolean editStatus = false;
 
     public void setLibraryBook(LibraryBook libraryBook)
     {
@@ -30,6 +31,10 @@ public class BookEditController
         copyrightField.setText(String.valueOf(libraryBook.getCopyright()));
         inventoryNumberField.setText(String.valueOf(libraryBook.getInventoryNumber()));
         freeCheckBox.setSelected(libraryBook.isBookFree());
+        if(editStatus)
+            inventoryNumberField.setDisable(true);
+        else
+            inventoryNumberField.setDisable(false);
     }
     public boolean isOkClicked()
     {
@@ -39,9 +44,13 @@ public class BookEditController
     {
         this.dialogStage = dialogStage;
     }
-    public void setClient(Client client)
+    public void setClient(ClientInterface client)
     {
         this.client = client;
+    }
+    public void setEditStatus(boolean editStatus)
+    {
+        this.editStatus = editStatus;
     }
 
     @FXML
@@ -97,21 +106,21 @@ public class BookEditController
             {
                 errorMessage += "Инвентарный номер указан не верно!\n";
             }
-            switch(client.checkInventoryNumber(number))
-            {
-                case -1:
-                    errorMessage += "Ошибка сервера...";
-                    break;
-                case 1:
-                    errorMessage += "Инвентарный номер занят";
-                    break;
-            }
+            if(!editStatus)
+                switch(client.checkInventoryNumber(number))
+                {
+                    case -1:
+                        errorMessage += "Ошибка сервера...";
+                        break;
+                    case 1:
+                        errorMessage += "Инвентарный номер занят";
+                        break;
+                }
         }
         catch(NumberFormatException e)
         {
             errorMessage += "Инвентарный номер имеет неверный формат!\n";
         }
-
 
         if(errorMessage.length() == 0)
         {

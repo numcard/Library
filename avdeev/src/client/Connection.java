@@ -57,22 +57,18 @@ public class Connection implements ConnectionInterface
     }
 
     @Override
-    public int closeConnection()
+    public void closeConnection()
     {
-        if(!connection)
-            return 0;
         try
         {
             sendCommand("EXIT");
             socket.close();
-            connection = false;
         }
         catch(IOException e)
         {
             ClientException.Throw(e);
-            return 1;
         }
-        return 0;
+        connection = false;
     }
 
     @Override
@@ -82,9 +78,9 @@ public class Connection implements ConnectionInterface
     }
 
     @Override
-    public int sendCommand(String command) throws IOException
+    public void sendCommand(String command) throws IOException
     {
-        return ConnectionService.sendCommand(command, socket);
+        ConnectionService.sendCommand(command, socket);
     }
 
     @Override
@@ -129,5 +125,48 @@ public class Connection implements ConnectionInterface
             ClientException.Throw(e);
         }
         return false;
+    }
+
+    @Override
+    public boolean checkStatus()
+    {
+        try
+        {
+            ConnectionService.sendCommand("CHECK_STATUS", socket);
+            String answer = ConnectionService.readInputLine(socket);
+            if(answer.startsWith("FREE_STATUS"))
+                return true;
+        }
+        catch(IOException e)
+        {
+            ClientException.Throw(e);
+        }
+        return false;
+    }
+
+    @Override
+    public void freeStatus()
+    {
+        try
+        {
+            ConnectionService.sendCommand("FREE_STATUS", socket);
+        }
+        catch(IOException e)
+        {
+            ClientException.Throw(e);
+        }
+    }
+
+    @Override
+    public void blockedStatus()
+    {
+        try
+        {
+            ConnectionService.sendCommand("BLOCKED_STATUS", socket);
+        }
+        catch(IOException e)
+        {
+            ClientException.Throw(e);
+        }
     }
 }

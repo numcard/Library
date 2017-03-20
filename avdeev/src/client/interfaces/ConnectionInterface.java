@@ -2,11 +2,10 @@ package client.interfaces;
 
 import lib.model.LibraryBook;
 
-import javax.xml.bind.JAXBException;
-import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+@SuppressWarnings("SameParameterValue")
 public interface ConnectionInterface
 {
     /**
@@ -27,13 +26,13 @@ public interface ConnectionInterface
      * @param port  port number
      * @return 0 if success, -1 if ConnectException, 1 if IOException
      */
+    @SuppressWarnings("unused")
     int createConnection(String host, int port);
 
     /**
      * Close connection
-     * @return  0 if success, 1 if IOException
      */
-    int closeConnection();
+    void closeConnection();
 
     /**
      * Read Input Line from Server
@@ -45,10 +44,9 @@ public interface ConnectionInterface
     /**
      * Send text command to Server
      * @param command   Text command
-     * @return 0 if success, -1 if there's no connection
      * @throws IOException IOException
      */
-    int sendCommand(String command) throws IOException;
+    void sendCommand(String command) throws IOException;
 
     /**
      * Send file to Server
@@ -68,4 +66,20 @@ public interface ConnectionInterface
      * @return  true if file existed, false if no
      */
     boolean checkBookIsExisted();
+
+    /**
+     * Check the server can write/save a books' archive
+     * @return  true/false status to write/save data
+     */
+    boolean checkStatus();
+
+    /**
+     * Do free status to write/save data on server
+     */
+    void freeStatus();
+
+    /**
+     * Do blocked status to write/save data on server
+     */
+    void blockedStatus();
 }

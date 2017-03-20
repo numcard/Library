@@ -1,11 +1,27 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <libraryBook>
     <libraryBook>
-        <author>Авдеев А.Л.</author>
+        <author>2</author>
         <bookFree>true</bookFree>
-        <copyright>2017</copyright>
-        <inventoryNumber>1</inventoryNumber>
-        <numberOfPages>354</numberOfPages>
-        <title>Джава для начинающих</title>
+        <copyright>3</copyright>
+        <inventoryNumber>5</inventoryNumber>
+        <numberOfPages>4</numberOfPages>
+        <title>1</title>
+    </libraryBook>
+    <libraryBook>
+        <author>3</author>
+        <bookFree>true</bookFree>
+        <copyright>4</copyright>
+        <inventoryNumber>6</inventoryNumber>
+        <numberOfPages>5</numberOfPages>
+        <title>2</title>
+    </libraryBook>
+    <libraryBook>
+        <author>4</author>
+        <bookFree>true</bookFree>
+        <copyright>5</copyright>
+        <inventoryNumber>7</inventoryNumber>
+        <numberOfPages>6</numberOfPages>
+        <title>3</title>
     </libraryBook>
 </libraryBook>

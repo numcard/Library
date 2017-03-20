@@ -81,10 +81,12 @@ public class BookOverviewController
     private void handleNewBook()
     {
         LibraryBook newBook = new LibraryBook();
-        boolean okClicked = clientApp.showBookEditDialog(newBook, "Создание книги");
+        boolean okClicked = clientApp.showBookEditDialog(newBook, "Создание книги", false);
         if(okClicked)
+        {
             clientApp.getLibraryBooks().add(newBook);
-        clientApp.getClient().saveBooks(clientApp.getLibraryBooks());
+            clientApp.getClient().saveBooks(clientApp.getLibraryBooks());
+        }
     }
 
     @FXML
@@ -98,13 +100,13 @@ public class BookOverviewController
         else
         {
             LibraryBook selectedBook = bookTable.getSelectionModel().getSelectedItem();
-            boolean okClicked = clientApp.showBookEditDialog(selectedBook, "Редактирование книги");
+            boolean okClicked = clientApp.showBookEditDialog(selectedBook, "Редактирование книги", true);
             if(okClicked)
             {
                 showBookDetails(selectedBook);
+                clientApp.getClient().saveBooks(clientApp.getLibraryBooks());
             }
         }
-        clientApp.getClient().saveBooks(clientApp.getLibraryBooks());
     }
 
     @FXML
@@ -118,10 +120,8 @@ public class BookOverviewController
         else
         {
             bookTable.getItems().remove(selectedIndex);
-            clientApp.getLibraryBooks().clear();
-            clientApp.getLibraryBooks().addAll(bookTable.getItems());
+            clientApp.getClient().saveBooks(clientApp.getLibraryBooks());
         }
-        clientApp.getClient().saveBooks(clientApp.getLibraryBooks());
     }
 
     private void showAlertNoChoose()

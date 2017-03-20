@@ -12,7 +12,7 @@ import java.util.List;
 
 public class Client implements ClientInterface
 {
-    private ConnectionInterface connection;
+    private final ConnectionInterface connection;
 
     public Client()
     {

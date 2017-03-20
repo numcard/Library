@@ -1,25 +1,32 @@
 package server;
 
+import lib.model.LibraryBook;
 import lib.service.BookService;
 import lib.service.ConnectionService;
 import server.interfaces.ConnectionInterface;
-import lib.model.LibraryBook;
 
 import javax.xml.bind.JAXBException;
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.net.Socket;
 import java.util.List;
 import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Connection implements Runnable, ConnectionInterface
 {
     private static final String ARCHIVE_PATH = "avdeev/src/server/data/books.zip";
-    private Socket socket;
+    private final Socket socket;
     private Future<?> future;
+    private AtomicInteger status;
 
     void setFuture(Future<?> future)
     {
         this.future = future;
+    }
+    void setStatus(AtomicInteger status)
+    {
+        this.status = status;
     }
 
     Connection(Socket socket)
@@ -63,6 +70,21 @@ public class Connection implements Runnable, ConnectionInterface
     @Override
     public boolean readCommand(String command) throws IOException
     {
+        if(command.startsWith("CHECK_STATUS"))
+        {
+            checkStatus();
+            return true;
+        }
+        if(command.startsWith("FREE_STATUS"))
+        {
+            freeStatus();
+            return true;
+        }
+        if(command.startsWith("BLOCKED_STATUS"))
+        {
+            blockedStatus();
+            return true;
+        }
         if(command.startsWith("CHECK_BOOKS"))
         {
             checkBooks();
@@ -93,6 +115,7 @@ public class Connection implements Runnable, ConnectionInterface
         try
         {
             List<LibraryBook> books = BookService.loadBooksFromArchive(ARCHIVE_PATH);
+            assert books != null;
             for(LibraryBook book: books)
             {
                 if(book.getInventoryNumber() == inventoryNumber)
@@ -132,5 +155,26 @@ public class Connection implements Runnable, ConnectionInterface
             ConnectionService.sendCommand("EXISTED", socket);
         else
             ConnectionService.sendCommand("NOT_EXISTED", socket);
+    }
+
+    @Override
+    public void checkStatus() throws IOException
+    {
+        if(status.get() == 0)
+            ConnectionService.sendCommand("FREE_STATUS", socket);
+        else
+            ConnectionService.sendCommand("BLOCKED_STATUS", socket);
+    }
+
+    @Override
+    public void freeStatus()
+    {
+        status.compareAndSet(1, 0);
+    }
+
+    @Override
+    public void blockedStatus()
+    {
+        status.compareAndSet(0, 1);
     }
 }

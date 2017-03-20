@@ -1,6 +1,7 @@
 package lib.service;
 
 import java.io.*;
+import java.net.ConnectException;
 import java.net.Socket;
 
 public class ConnectionService
@@ -25,19 +26,18 @@ public class ConnectionService
      * Send text command to Output socket stream
      * @param command   Text command
      * @param socket    Socket
-     * @return  0 if success, -1 if there's no connection
      * @throws IOException IOException
      */
-    public static int sendCommand(String command, Socket socket) throws IOException
+    public static void sendCommand(String command, Socket socket) throws IOException
     {
         PrintWriter writer;
         if(socket.isConnected())
         {
             writer = new PrintWriter(socket.getOutputStream(), true);
             writer.println(command);
-            return 0;
         }
-        return -1;
+        else
+            throw new ConnectException("socket is closed");
     }
 
     /**

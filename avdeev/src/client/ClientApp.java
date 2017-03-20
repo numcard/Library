@@ -3,11 +3,13 @@ package client;
 import client.controller.BookEditController;
 import client.controller.BookOverviewController;
 import client.controller.RootLayoutController;
+import client.interfaces.ClientInterface;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
@@ -24,7 +26,7 @@ public class ClientApp extends Application
     private Stage primaryStage;                                                                     // Сцена приложения
     private BorderPane rootLayout;                                                                  // Корневой макет
     private final ObservableList<LibraryBook> libraryBooks = FXCollections.observableArrayList();   // Данные приложения
-    private final Client client = new Client();                                                     // Модель клиента
+    private final ClientInterface client = new Client();                                                     // Модель клиента
     private BookOverviewController bookOverviewController;
 
     public ObservableList<LibraryBook> getLibraryBooks()
@@ -36,7 +38,7 @@ public class ClientApp extends Application
         this.libraryBooks.clear();
         this.libraryBooks.addAll(libraryBooks);
     }
-    public Client getClient()
+    public ClientInterface getClient()
     {
         return client;
     }
@@ -49,6 +51,15 @@ public class ClientApp extends Application
     public static void main(String[] args)
     {
         launch(args);
+    }
+
+    public void updateLibraryBooks()
+    {
+        if(client.getConnection().isConnected())
+        {
+            List<LibraryBook> books = client.getConnection().downloadBooks();
+            setLibraryBooks(books);
+        }
     }
 
     @Override
@@ -118,29 +129,45 @@ public class ClientApp extends Application
         }
     }
 
-    public boolean showBookEditDialog(LibraryBook libraryBook, String title)
+    public boolean showBookEditDialog(LibraryBook libraryBook, String title, boolean editStatus)
     {
         try
         {
-            FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(ClientApp.class.getResource("view/BookEditDialog.fxml"));
-            AnchorPane bookEditDialogPage = loader.load();
+            // check status to edit data on server side
+            if(client.getConnection().checkStatus())
+            {
+                client.getConnection().blockedStatus();
+                FXMLLoader loader = new FXMLLoader();
+                loader.setLocation(ClientApp.class.getResource("view/BookEditDialog.fxml"));
+                AnchorPane bookEditDialogPage = loader.load();
 
-            Stage dialogStage = new Stage();
-            dialogStage.setTitle(title);
-            dialogStage.initModality(Modality.WINDOW_MODAL);
-            dialogStage.initOwner(primaryStage);
-            Scene scene = new Scene(bookEditDialogPage);
-            dialogStage.setScene(scene);
+                Stage dialogStage = new Stage();
+                dialogStage.setTitle(title);
+                dialogStage.initModality(Modality.WINDOW_MODAL);
+                dialogStage.initOwner(primaryStage);
+                Scene scene = new Scene(bookEditDialogPage);
+                dialogStage.setScene(scene);
 
-            BookEditController controller = loader.getController();
-            controller.setLibraryBook(libraryBook);
-            controller.setDialogStage(dialogStage);
-            controller.setClient(client);
+                BookEditController controller = loader.getController();
+                controller.setEditStatus(editStatus);
+                controller.setLibraryBook(libraryBook);
+                controller.setDialogStage(dialogStage);
+                controller.setClient(client);
 
-            dialogStage.showAndWait();
+                dialogStage.showAndWait();
 
-            return controller.isOkClicked();
+                client.getConnection().freeStatus();
+                return controller.isOkClicked();
+            }
+            else
+            {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Внимание");
+                alert.setHeaderText("Операция временно недоступна");
+                alert.setContentText("Операция занята другим пользователем");
+                alert.showAndWait();
+                return false;
+            }
         }
         catch(IOException e)
         {
