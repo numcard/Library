@@ -1,0 +1,9 @@
+client\interfaces\ConnectionInterface.class
+client\ClientApp.class
+client\ClientException.class
+client\Client.class
+client\Connection.class
+client\controller\RootLayoutController.class
+client\controller\BookEditController.class
+client\controller\BookOverviewController.class
+client\interfaces\ClientInterface.class

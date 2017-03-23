@@ -1,0 +1,5 @@
+server\Connection.class
+server\ServerException.class
+server\interfaces\ConnectionInterface.class
+server\Server.class
+server\TestServer.class

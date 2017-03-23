@@ -1,0 +1,6 @@
+shared\model\LibraryBook$1.class
+shared\service\BookService.class
+shared\model\LibraryBookWrapper.class
+shared\model\LibraryBook$Book.class
+shared\service\ConnectionService.class
+shared\model\LibraryBook.class
