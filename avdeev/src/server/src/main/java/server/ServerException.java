@@ -1,26 +1,43 @@
 package server;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 
 class ServerException
 {
-    private static final String OUTPUT_PATH = "avdeev/src/server/log/log.txt";
+    private static final String LOGFILE_DIR = "log";
+    private static final String LOGFILE_NAME = "log.txt";
+    private static final String LOGFILE_PATH = LOGFILE_DIR + "/" + LOGFILE_NAME;
 
     private ServerException()
     {}
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     static void Throw(Exception exception)
     {
-        try(PrintWriter pw = new PrintWriter(new FileWriter(OUTPUT_PATH, true), true))
+        File logDir = new File(LOGFILE_DIR);
+        File logFile = new File(LOGFILE_PATH);
+        if(!logDir.exists())
+            logDir.mkdir();
+        if(!logFile.exists())
+            try
+            {
+                logFile.createNewFile();
+            }
+            catch(IOException e)
+            {
+                e.printStackTrace();
+            }
+        try(PrintWriter pw = new PrintWriter(new FileWriter(LOGFILE_PATH, true), true))
         {
             exception.printStackTrace(); // debug mode
             pw.write(exception.getMessage());
         }
-        catch(IOException ignored)
+        catch(IOException e)
         {
-            //ignored
+            e.printStackTrace();
         }
     }
 }
