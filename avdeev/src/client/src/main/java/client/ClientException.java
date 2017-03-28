@@ -1,5 +1,10 @@
 package client;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+
 class ClientException
 {
     private static final String LOGFILE_DIR = "log";
@@ -12,8 +17,7 @@ class ClientException
     @SuppressWarnings("ResultOfMethodCallIgnored")
     static void Throw(Exception exception)
     {
-        exception.printStackTrace();
-        /*File logDir = new File(LOGFILE_DIR);
+        File logDir = new File(LOGFILE_DIR);
         File logFile = new File(LOGFILE_PATH);
         if(!logDir.exists())
             logDir.mkdir();
@@ -34,6 +38,6 @@ class ClientException
         catch(IOException e)
         {
             e.printStackTrace();
-        }*/
+        }
     }
 }
