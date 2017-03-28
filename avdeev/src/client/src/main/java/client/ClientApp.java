@@ -17,8 +17,8 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import shared.model.LibraryBook;
 
-import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.List;
 
 
@@ -66,12 +66,19 @@ public class ClientApp extends Application
     @Override
     public void start(Stage primaryStage)
     {
-        File iconFile = new File(getClass().getResource("/icons/client-icon.png").getPath());
         this.primaryStage = primaryStage;
         this.primaryStage.setTitle("Электронная библиотека");
-
-        // Устанавливаем иконку приложения.
-        this.primaryStage.getIcons().add(new Image("file:" + iconFile));
+        try
+        {
+            URL icon = getClass().getResource("/icons/client-icon.png");
+            Image iconImage = new Image(icon.openStream());
+            // Устанавливаем иконку приложения.
+            this.primaryStage.getIcons().add(iconImage);
+        }
+        catch(IOException e)
+        {
+            ClientException.Throw(e);
+        }
 
         initRootLayout();
         showBookOverview();

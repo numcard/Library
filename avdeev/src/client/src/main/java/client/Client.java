@@ -8,7 +8,6 @@ import shared.service.BookService;
 import javax.xml.bind.JAXBException;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
 import java.util.List;
 
 public class Client implements ClientInterface
@@ -30,11 +29,9 @@ public class Client implements ClientInterface
     {
         try
         {
-            String path = getClass().getResource("../").getPath();
-            File archiveFile = BookService.saveBooksToArchive(libraryBooks, path + "data/");
+            File archiveFile = BookService.saveBooksToArchive(libraryBooks);
             connection.sendCommand("SAVE_BOOKS");
             connection.sendFile(archiveFile.getPath());
-            System.out.println("success");
         }
         catch(IOException | JAXBException e)
         {

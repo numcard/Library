@@ -16,7 +16,6 @@ public class Connection implements ConnectionInterface
 {
     private static final int DEFAULT_PORT = 5555;
     private static final String DEFAULT_HOST = "localhost";
-    private static final String ARCHIVE_PATH = "/data/books.zip";
     private boolean connection = false;
 
     private Socket socket;
@@ -97,8 +96,8 @@ public class Connection implements ConnectionInterface
             try
             {
                 ConnectionService.sendCommand("GET_BOOKS", socket);
-                ConnectionService.downloadFile(getClass().getResource(ARCHIVE_PATH).getPath(), socket);
-                return BookService.loadBooksFromArchive(ARCHIVE_PATH);
+                ConnectionService.downloadFile(BookService.BOOK_ARCHIVE_PATH, socket);
+                return BookService.loadBooksFromArchive();
             }
             catch(JAXBException | IOException e)
             {
